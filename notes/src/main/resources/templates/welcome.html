@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Personal Diary </title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+        <link th:href="@{/css/offcanvas.css}" rel="stylesheet">
+        <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    </head>
+    <body class="bg-light">
+        <!--=====================Navbar=============================-->
+        <div th:replace="~{fragments/navbar :: nav}"></div>
+        <!--=====================Navbar=============================-->
+        <!--=====================Welcome User=============================-->
+        <div class="align-items-center my-3 p-5 text-white bg-primary box-shadow">
+            <ul class="nav justify-content-center">
+                <li class="nav-item" th:with="username = ${#authentication.getPrincipal().getUsername()}">
+                    <h5 th:text="${'Welcome back ' + #strings.capitalizeWords(username)}">Welcome User</h5>
+                </li>
+            </ul>
+        </div>
+        <!--=====================Welcome User=============================-->
+
+
+        <main class="container" role="main">
+            <!--=====================Categories=============================-->
+            <div class="my-3 p-3 bg-light rounded box-shadow">
+                <div class="row" th:if="${list}">
+                    <div class="col-sm-4 col-md-3 col-lg-2 p-1">
+                        <a th:href="@{'/note/'}">
+                            <div class="p-3 text-white text-center bg-primary rounded box-shadow" 
+                                 th:classappend="${ctgNo == null ? 'bg-success' : 'bg-info'}">
+                                <h5>All</h5>
+                            </div>
+                        </a>
+                    </div>
+                    <div th:if="${categories}" th:each="category : ${categories}" class="col-sm-4 col-md-3 col-lg-2 p-1">
+                        <a th:href="@{'/note/category/' + ${category.id}}">
+                            <div class="p-3 text-white text-center rounded box-shadow" 
+                                 th:classappend="${ctgNo == category.id ? 'bg-success' : 'bg-info'}">
+                                <h5 th:text="${category.name}">Category</h5>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!--=====================Categories=============================-->
+
+            <!--=====================Note List=============================-->
+            <div class="my-3 p-3 bg-light rounded box-shadow">
+                <div class="row">
+                    <div th:if="${list}" class="col-12 table-responsive">
+                        <table class="table table-borderless table-condensed table-hover">
+                            <thead></thead>
+                            <tbody>
+                                <tr class="even pointer" th:each="note: ${list}">
+                                    <td th:text="${note.title}"></td>
+                                    <td th:text="${note.description}"></td>
+                                    <td th:text="${#dates.format(note.date, 'dd-MMM')}"></td>
+                                    <td>
+                                        <span class="float-right">
+                                            <a class="btn btn-info btn-sm" th:href="@{'/note/'+${note.id}}" title="View">
+                                                <i class="fa fa-eye"></i>
+                                            </a>
+                                            <a class="btn btn-success btn-sm" th:href="@{'/note/update/'+${note.id}}" title="Edit">
+                                                <i class="fa fa-pencil-square"></i>
+                                            </a>
+                                            <a class="btn btn-danger btn-sm" th:href="@{'/note/delete/'+${note.id}}" title="Delete">
+                                                <i class="fa fa-trash" aria-hidden="true"></i>
+                                            </a>
+                                        </span>  
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot></tfoot>
+                        </table>
+                    </div>
+                </div>
+                <div class="row" th:if="${totalPages gt 0}">
+                    <div class="col-6" >
+                        <small th:text="${'Page ' + (pageIndex + 1) + ' of ' + totalPages + ' pages'}"></small>
+                    </div>
+                    <div class="col-6 text-right" >
+                        <small th:text="${'Total ' + totalElements + ' entries'}"></small>
+                    </div>
+                </div>
+                <div class="row" th:if="${totalPages gt 1}" 
+                     th:with="pageUrl = ${(ctgNo == null) ? ('/note/?') : ('/note/category/' + ctgNo + '?')}">
+                    <div class="col-12" aria-label="Pagination">                    
+                        <ul class="pagination justify-content-center font-weight-medium">
+                            <li class="page-item" th:classappend="${pageIndex lt 5} ? 'hide'">
+                                <a class="page-link svg-icon"
+                                   th:href="@{${pageUrl}+'&page=0'}"
+                                   aria-label="First"
+                                   title="First Page" rel="tooltip">
+                                    <i class="fa fa-angle-left"></i>
+                                    <i class="fa fa-angle-left"></i>
+                                </a>
+                            </li>
+                            <li class="page-item" th:classappend="${pageIndex lt 5} ? 'hide'">
+                                <a class="page-link svg-icon"
+                                   th:href="@{${pageUrl}+'&page='+${pageIndex - 1}}"
+                                   aria-label="Previous"
+                                   title="Previous Page" rel="tooltip">
+                                    <i class="fa fa-angle-left"></i>
+                                </a>
+                            </li>
+                            <li class="page-item" th:classappend="${i eq pageIndex} ? 'active'"
+                                th:each="i : ${#numbers.sequence(pageIndex > 2 ? pageIndex - 2 : 0, 
+                                totalPages > pageIndex + 2 ? pageIndex + 2 : totalPages -1, 1)}">
+                                <a class="page-link" th:href="@{${pageUrl}+'&page='+${i}}" th:text="${i + 1}"
+                                   th:title="${'Page '+ (i+1)}"
+                                   rel="tooltip"></a>
+                            </li>
+                            <li class="page-item disabled" th:if="${pageIndex + 3 < totalPages}">
+                                <a class="page-link svg-icon" href="#">
+                                    <i class="fa fa-ellipsis-h"></i>
+                                </a>
+                            </li>
+                            <li class="page-item" th:classappend="${totalPages == (pageIndex + 1)} ? 'hide'">
+                                <a class="page-link svg-icon" th:href="@{${pageUrl}+'&page='+${pageIndex + 1}}"
+                                   aria-label="Next"
+                                   title="Next Page" rel="tooltip">
+                                    <i class="fa fa-angle-right"></i>
+                                </a>
+                            </li>
+                            <li class="page-item" th:classappend="${totalPages < 6} ? 'hide'">
+                                <a class="page-link" th:href="@{${pageUrl}+'&page='+${totalPages - 1}}"
+                                   aria-label="Last"
+                                   title="Last Page" rel="tooltip">
+                                    <i class="fa fa-angle-right"></i>
+                                    <i class="fa fa-angle-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!--=====================Note List=============================-->
+        </main>
+
+        <script th:src="@{/js/jquery-slim.min.js}"></script>
+        <script th:src="@{/js/popper.min.js}"></script>
+        <script th:src="@{/js/bootstrap.min.js}"></script>
+        <script th:src="@{/js/holder.min.js}"></script>
+        <script>
+            $(function () {
+                'use strict';
+                $('[data-toggle="offcanvas"]').on('click', function () {
+                    $('.offcanvas-collapse').toggleClass('open');
+                });
+                $('[data-toggle="tooltip"]').tooltip();
+            });
+        </script>
+    </body>
+</html>  

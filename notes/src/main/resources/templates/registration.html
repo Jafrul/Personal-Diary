@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <title>Regirter</title>        
+        <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+        <link th:href="@{/css/common.css}" rel="stylesheet">
+    </head>
+    <body>
+        <div class="container">
+            <div class="nav-scroller"></div>
+            <main role="main" class="container">
+                <form action="#" th:action="@{'/registration'}" th:object="${entity}" method="post" class="form-signin">
+                    <h2 class="form-signin-heading text-center">Create your account</h2>
+                    <span th:if="${message}" th:text="${message}" class="text-success"></span>    
+                    <span th:if="${error}" th:text="${error}" class="text-danger"></span>            
+                    <div class="form-group">
+                        <input th:field="*{username}" type="text" class="form-control" placeholder="Username" autofocus="true" required/>
+                        <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input th:field="*{password}" type="password" class="form-control" placeholder="Password" required/>
+                        <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger"></span>
+                    </div>
+                    <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
+                    <h6 class="text-center p-3"><span>Already have an account? </span><a th:href="@{'/login'}"> Sign in</a></h6>
+
+                </form>
+            </main>
+        </div>        
+    </body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <title>Add Note</title>
+        <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+        <link th:href="@{/css/offcanvas.css}" rel="stylesheet">
+        <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    </head>
+    <body>
+        <!--=====================Navbar=============================-->
+        <div th:replace="~{fragments/navbar :: nav}"></div>
+        <!--=====================Navbar=============================-->
+        <div class="container-v">
+            <main role="main" class="container">
+                <div class="row" th:if="${note}">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-8">
+                        <div class="my-3 p-3 bg-light rounded box-shadow">
+                            <div class="row text-center">
+                                <h4 th:text="${note.title}" class="col-12 p-3 bg-info text-white rounded box-shadow">Note title</h4>
+                            </div>
+                            <div class="row bg-transparent">
+                                <div class="col-6">
+                                    <small th:text="${'Category: ' + #strings.capitalizeWords(note.category.name)}" class="float-left">Category</small>
+                                </div>
+                                <div class="col-6">
+                                    <small th:text="${#dates.format(note.date, 'MMM dd, yyyy')}" class="float-right">Date</small>
+                                </div>
+                            </div>
+                            <div class="row p-2 bg-light">
+                                <div class="col-12">
+                                    <p th:text="${note.description}">Description</p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-md-2"></div>
+                </div>
+            </main>
+        </div>
+
+        <script th:src="@{/js/jquery-slim.min.js}"></script>
+        <script th:src="@{/js/popper.min.js}"></script>
+        <script th:src="@{/js/bootstrap.min.js}"></script>
+        <script th:src="@{/js/holder.min.js}"></script>
+        <script>
+            $(function () {
+                'use strict'
+
+                $('[data-toggle="offcanvas"]').on('click', function () {
+                    $('.offcanvas-collapse').toggleClass('open')
+                })
+            })
+        </script>
+    </body>
+</html>
