@@ -1,5 +1,5 @@
 # Personal-Diary
-This is a jar project
+This is a jar file.
 
 Installation
 
