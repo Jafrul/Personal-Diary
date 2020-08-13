@@ -21,7 +21,7 @@ public class CategoryServiceImpl implements CategoryService {
         if (category.getId() != null) {
             return this.update(category, username);
         }
-        boolean alreadyExists = this.categoryRepository.existsByNameAndUserame(category.getName(), username);
+        boolean alreadyExists = this.categoryRepository.existsByNameAndUsername(category.getName(), username);
         if (alreadyExists) {
             return null;
         } else {
