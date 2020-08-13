@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface CategoryRepository extends JpaRepository<Category, Integer> {
 
-    boolean existsByName(String name);
+    boolean existsByNameAndUserame(String name, String username);
 
     List<Category> findByUsername(String username);
 
